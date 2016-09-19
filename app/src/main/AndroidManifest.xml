@@ -51,6 +51,12 @@
 
         </activity>
 
+        <activity
+            android:name=".Activities.Comments"
+            android:screenOrientation="portrait">
+
+        </activity>
+
 
     </application>
 

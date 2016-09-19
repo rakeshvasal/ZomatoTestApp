@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -78,7 +79,7 @@ public class SelectSearchPopup extends Activity implements AdapterView.OnItemCli
         protected void onPreExecute() {
             super.onPreExecute();
             pdailog = new ProgressDialog(SelectSearchPopup.this);
-            pdailog.setMessage("Syncing Model! Please wait...");
+            pdailog.setMessage("Searching Restaurant! Please wait...");
             pdailog.setCancelable(false);
             pdailog.show();
 
@@ -128,7 +129,7 @@ public class SelectSearchPopup extends Activity implements AdapterView.OnItemCli
                         JSONObject jsonObject4 = jsonObject3.getJSONObject("location");
                         res_locality[i] = jsonObject4.getString("locality");
 
-                        Select_restaurant_name_popup_RowItem item = new Select_restaurant_name_popup_RowItem(res_name[i],res_locality[i]);
+                        Select_restaurant_name_popup_RowItem item = new Select_restaurant_name_popup_RowItem(res_name[i], res_locality[i]);
                         rowItems.add(item);
                     }
                     listView = (ListView) findViewById(R.id.list);
@@ -169,12 +170,21 @@ public class SelectSearchPopup extends Activity implements AdapterView.OnItemCli
                                 contentValues.put(DatabaseHelper.LATITUDE, latitude);
                                 contentValues.put(DatabaseHelper.LONGITUDE, longitude);
 
-                                insert_Status = db.insert(DatabaseHelper.RESTAURANT_TABLE, null, contentValues) > 0;
+                                final String[] res_data = new String[]{DatabaseHelper.RESTAURANT_ID, DatabaseHelper.RESTAURANT_NAME};
+                                Cursor cursor3 = db.query(DatabaseHelper.RESTAURANT_TABLE, res_data, DatabaseHelper.RESTAURANT_ID + "='" + res_id + "'", null, null, null, null);
+                                int i = cursor3.getCount();
+                                if (i > 0) {
+                                    db.delete(DatabaseHelper.RESTAURANT_TABLE, DatabaseHelper.RESTAURANT_ID + "='" + res_id + "'", null);
+                                    insert_Status = db.insertOrThrow(DatabaseHelper.RESTAURANT_TABLE, null, contentValues) > 0;
+                                }else{
+                                    insert_Status = db.insertOrThrow(DatabaseHelper.RESTAURANT_TABLE, null, contentValues) > 0;
+                                }
                                 Log.d("insert", "" + insert_Status);
 
                                 Log.d("name", res_name);
                                 Intent intent = new Intent();
                                 setResult(1, intent);
+
                                 finish();
                             } catch (Exception e) {
                                 e.printStackTrace();

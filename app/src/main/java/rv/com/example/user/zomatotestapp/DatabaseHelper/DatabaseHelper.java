@@ -10,17 +10,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static String DATABASE_NAME = "Zomato.db";
-    public static int DATABASE_VERSION = 2;
+    public static int DATABASE_VERSION = 3;
 
     public static String RESTAURANT_TABLE = "restaurant_table";
     public static String RESTAURANT_ID_PK = "_id";
     public static String RESTAURANT_ID = "restaurant_id";
-    public static String LOCALITY ="locality";
-    public static String ADDRESS ="address";
-    public static String SITE_URL ="siteurl";
-    public static String LATITUDE ="latitude";
-    public static String LONGITUDE ="longitude";
-    public static String RESTAURANT_NAME ="restaurant_name";
+    public static String LOCALITY = "locality";
+    public static String ADDRESS = "address";
+    public static String SITE_URL = "siteurl";
+    public static String LATITUDE = "latitude";
+    public static String LONGITUDE = "longitude";
+    public static String RESTAURANT_NAME = "restaurant_name";
     //public static String RESTAURANT_NAME ="restaurant_id";
     //public static String RESTAURANT_NAME ="restaurant_id";
 
@@ -37,10 +37,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String Drop_Restaurant_Table = " Drop Table IF EXISTS " + RESTAURANT_TABLE;
 
 
-    public static String COMMENTS_TABLE ="comments_table";
-    public static String COMMENTS_TEXT ="comments_text";
-    public static String COMMENTS_PK ="_id";
+    public static String COMMENTS_TABLE = "comments_table";
+    public static String COMMENTS_TEXT = "comments_text";
+    public static String COMMENTS_PK = "_id";
 
+    public static String Create_Comments_Table = " CREATE TABLE " + COMMENTS_TABLE + " ( "
+            + COMMENTS_PK + " integer primary key autoincrement, "
+            + RESTAURANT_ID + " text, "
+            + COMMENTS_TEXT + " text " + " ) ";
+
+    public static String Drop_Comments_Table = " Drop Table IF EXISTS " + COMMENTS_TABLE;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,12 +54,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-    db.execSQL(Create_Restaurant_Table);
+        db.execSQL(Create_Restaurant_Table);
+        db.execSQL(Create_Comments_Table);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(Drop_Restaurant_Table);
+        db.execSQL(Drop_Comments_Table);
         onCreate(db);
     }
 }

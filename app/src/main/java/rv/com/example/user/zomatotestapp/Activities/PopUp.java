@@ -35,6 +35,7 @@ public class PopUp extends Activity {
             longitude = i.getStringExtra("long");
             res_id = i.getStringExtra("Restaurant_id");
             res_name = i.getStringExtra("Restaurant_name");
+        }
             Location.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -44,13 +45,22 @@ public class PopUp extends Activity {
                         i.putExtra("long",longitude);
                         i.putExtra("res_name",res_name);
                         startActivity(i);
+
                     } else {
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
 
                     }
                 }
             });
-        }
+
+            comments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(PopUp.this, Comments.class);
+                    i.putExtra("res_id",res_id);
+                    startActivity(i);
+                }
+            });
     }
 }
 
